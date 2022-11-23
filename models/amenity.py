@@ -4,6 +4,6 @@
 from models.base_model import BaseModel
 
 
-class Amenity(BaseMode):
+class Amenity(BaseModel):
     """Class for managing amenity objects"""
     name = ""
