@@ -144,7 +144,7 @@ class HBNBCommand(cmd.Cmd):
         """catch command if no match"""
         self._precmd(line)
 
-    def _precmd(sellf, line):
+    def _precmd(self, line):
         """Intercept command to test for class.syntax()"""
         match = re.search(r"^(\w*)\.(\w+)(?:\(([^)]*)\))$", line)
         if not match:
@@ -154,7 +154,7 @@ class HBNBCommand(cmd.Cmd):
         args = match.group(3)
         matchUidArgs = re.search('^"([^"]*)"(?:, (.*))?$', args)
         if matchUidArgs:
-            uid = matchUidArgs.group(2)
+            uid = matchUidArgs.group(1)
             attrDict = matchUidArgs.group(2)
         else:
             uid = args
@@ -162,7 +162,7 @@ class HBNBCommand(cmd.Cmd):
 
         attrValue = ""
         if method == "update" and attrDict:
-            matchDict = re.search('^({.*})$', attr_or_dict)
+            matchDict = re.search('^({.*})$', attrDict)
             if matchDict:
                 self.update_dict(classname, uid, matchDict.group(1))
                 return ""
@@ -175,7 +175,26 @@ class HBNBCommand(cmd.Cmd):
         return command
 
     def update_dict(self, classname, uid, s_dict):
-
+        """helper method for update"""
+        s = s_dict.replace("'", '"')
+        d = json.loads(s)
+        if not classname:
+            print("** class name missing **")
+        elif classname not in storage.classes():
+            print("** class doesn't exist **")
+        elif uid is None:
+            print("** instance id missing **")
+        else:
+            key = "{}.{}".format(classname, uid)
+            if key not in storage.all():
+                print("** no instance found **")
+            else:
+                attributes = storage.attributes()[classname]
+                for attribute, value in d.items():
+                    if attribute in attributes:
+                        value = attributes[attribute](value)
+                    setattr(storage.all()[key], attribute, value)
+                storage.all()[key].save()
 
 
 if __name__ == '__main__':
