@@ -140,6 +140,43 @@ class HBNBCommand(cmd.Cmd):
                     setattr(storage.all()[key], attribute, value)
                     storage.all()[key].save()
 
+    def default(self, line):
+        """catch command if no match"""
+        self._precmd(line)
+
+    def _precmd(sellf, line):
+        """Intercept command to test for class.syntax()"""
+        match = re.search(r"^(\w*)\.(\w+)(?:\(([^)]*)\))$", line)
+        if not match:
+            return line
+        classname = match.group(1)
+        method = match.group(2)
+        args = match.group(3)
+        matchUidArgs = re.search('^"([^"]*)"(?:, (.*))?$', args)
+        if matchUidArgs:
+            uid = matchUidArgs.group(2)
+            attrDict = matchUidArgs.group(2)
+        else:
+            uid = args
+            attrDict = False
+
+        attrValue = ""
+        if method == "update" and attrDict:
+            matchDict = re.search('^({.*})$', attr_or_dict)
+            if matchDict:
+                self.update_dict(classname, uid, matchDict.group(1))
+                return ""
+            matchAttrValue = re.search('^(?:"([^"]*)")?(?:, (.*))?$', attrDict)
+            if matchAttrValue:
+                attrValue = (matchAttrValue.group(1) or "")
+                + " " + (matchAttrValue.group(2) or "")
+        command = method + " " + classname + " " + uid + " " + attrValue
+        self.onecmd(command)
+        return command
+
+    def update_dict(self, classname, uid, s_dict):
+
+
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
