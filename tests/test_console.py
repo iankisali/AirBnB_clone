@@ -62,7 +62,7 @@ EOF  all  count  create  destroy  help  quit  show  update
         """Tests the help command."""
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("help EOF")
-        s = 'Handles End Of File character.\n        \n'
+        s = 'handels EOF character\n'
         self.assertEqual(s, f.getvalue())
 
     def test_help_quit(self):
@@ -635,7 +635,7 @@ EOF  all  count  create  destroy  help  quit  show  update
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd(".update()")
         msg = f.getvalue()[:-1]
-        self.assertEqual(msg, "** class name missing **")
+        self.assertEqual(msg, "** class name is missing **")
 
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("garbage.update()")
