@@ -640,7 +640,7 @@ EOF  all  count  create  destroy  help  quit  show  update
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("garbage.update()")
         msg = f.getvalue()[:-1]
-        self.assertEqual(msg, "** class doesn't exist **")
+        self.assertEqual(msg, "** class does't exist ** ")
 
         with patch('sys.stdout', new=StringIO()) as f:
             HBNBCommand().onecmd("BaseModel.update()")
